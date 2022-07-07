@@ -389,6 +389,7 @@ getParams();
                     function onlyUnique(value, index, self) {
                         return self.indexOf(value) === index;
                     }
+                    console.log(this.responseText);
                     var response = JSON.parse(this.responseText);
 
                     let CarType = [];
@@ -425,13 +426,13 @@ getParams();
                     let GearBoxSelect = document.querySelector("[name = 'GearBox']");
                     let ColorSelect = document.querySelector("[name = 'Color']");
 
-                    let CarTypeHtml = "";
-                    let modelsHtml = "";
-                    let EngineSizeHtml = "";
-                    let PowerHtml = "";
-                    let FuelHtml = "";
-                    let GearBoxHtml = "";
-                    let ColorHtml = "";
+                    let CarTypeHtml = "<option value='All'>--All--</option>";
+                    let modelsHtml = "<option value='All'>--All--</option>";
+                    let EngineSizeHtml = "<option value='All'>--All--</option>";
+                    let PowerHtml = "<option value='All'>--All--</option>";
+                    let FuelHtml = "<option value='All'>--All--</option>";
+                    let GearBoxHtml = "<option value='All'>--All--</option>";
+                    let ColorHtml = "<option value='All'>--All--</option>";
 
                     for (var i = 0; i < CarType.length; i++)
                         CarTypeHtml += "<option value='" + CarType[i] + "'>" + CarType[i] + "</option>";

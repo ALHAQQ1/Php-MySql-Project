@@ -3,7 +3,7 @@ require_once 'db.php';
 require_once 'functions.php';
 getParams();
 if ($query == "All")
-    $sql = "SELECT * FROM cars";
+    $sql = "SELECT * FROM car";
 else
     $sql = "SELECT * FROM `car` WHERE make = '$query'";
 
