@@ -1,3 +1,10 @@
+<?php
+require_once 'db.php';
+require_once 'functions.php';
+
+getParams();
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -29,29 +36,20 @@
                 <div class="row">
                     <div class="col-md-12">
                         <button id="primary-nav-button" type="button">Menu</button>
-                        <a href="index.html">
+                        <a href="index.php">
                             <div class="logo">
                                 <img src="img/logo.png" alt="Venue Logo">
                             </div>
                         </a>
                         <nav id="primary-nav" class="dropdown cf">
                             <ul class="dropdown menu">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="index.php">Home</a></li>
 
-                                <li class='active'><a href="cars.html">Cars</a></li>
+                                <li class='active'><a href="cars.php">Cars</a></li>
 
-                                <li>
-                                    <a href="#">About</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="team.html">Team</a></li>
-                                        <li><a href="testimonials.html">Testimonials</a></li>
-                                        <li><a href="faq.html">FAQ</a></li>
-                                        <li><a href="terms.html">Terms</a></li>
-                                    </ul>
-                                </li>
+                                <li><a href="about-us.html">About Us</a></li>
 
-                                <li><a class="nav-link" href="contact.html">Contact Us</a></li>
+                                <li><a class="nav-link" href="contact.php">Contact Us</a></li>
                             </ul>
                         </nav><!-- / #primary-nav -->
                     </div>
@@ -76,18 +74,27 @@
     <main>
         <section class="featured-places">
             <div class="container">
-                <form action="#">
+                <form action="">
                     <div class="row">
+
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <div class="form-group">
                                 <label>Vehicle Type:</label>
 
-                                <select class="form-control">
-                                    <option value="">--All --</option>
-                                    <option value="">--All --</option>
-                                    <option value="">--All --</option>
-                                    <option value="">--All --</option>
-                                    <option value="">--All --</option>
+                                <select name="CarType" class="form-control">
+                                    <option value="All">--All--</option>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT CarType FROM car GROUP BY CarType");
+                                    $stmt->execute();
+                                    $Vehicle = $stmt->fetchAll();
+                                    foreach ($Vehicle as $Veh) {
+                                        $string = "<option value='" . $Veh['CarType'] . "'";
+                                        if (isset($CarType) && $CarType == $Veh['CarType']) $string .= "selected";
+                                        $string .= ">" . $Veh['CarType'] . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
+
                                 </select>
                             </div>
                         </div>
@@ -96,14 +103,19 @@
                             <div class="form-group">
                                 <label>Make:</label>
 
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="Make" onchange="GetDataForMake(this.value)" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT Make FROM car GROUP BY Make");
+                                    $stmt->execute();
+                                    $makes = $stmt->fetchAll();
+                                    foreach ($makes as $make) {
+                                        $string = "<option value='" . $make['Make'] . "'";
+                                        if (isset($Make) && $Make == $make['Make']) $string .= "selected";
+                                        $string .= ">" . $make['Make'] . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -111,12 +123,19 @@
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <div class="form-group">
                                 <label>Model:</label>
-
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="Model" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT Model FROM car GROUP BY Model");
+                                    $stmt->execute();
+                                    $models = $stmt->fetchAll();
+                                    foreach ($models as $model) {
+                                        $string = "<option value='" . $model["Model"] . "'";
+                                        if (isset($Model) && $Model == $model["Model"]) $string .= "selected";
+                                        $string .= ">" . $model["Model"] . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -127,11 +146,23 @@
                             <div class="form-group">
                                 <label>Engine size:</label>
 
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="EngineSize" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $arr = [];
+                                    $stmt = $conn->prepare("SELECT Engine FROM car GROUP BY Engine");
+                                    $stmt->execute();
+                                    $Engines = $stmt->fetchAll();
+                                    foreach ($Engines as $engine) $arr[] = ($engine['Engine']);
+                                    sort($arr, SORT_NUMERIC);
+                                    foreach ($arr as $EngineSiz) {
+                                        $string = "<option value='" . $EngineSiz . "'";
+                                        if (isset($EngineSize) && $EngineSize == $EngineSiz) $string .= "selected";
+                                        $string .= ">" . $EngineSiz . "</option>";
+                                        echo $string;
+                                    }
+
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -140,11 +171,22 @@
                             <div class="form-group">
                                 <label>Power:</label>
 
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="Power" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $arr = [];
+                                    $stmt = $conn->prepare("SELECT EnginePower FROM car GROUP BY EnginePower");
+                                    $stmt->execute();
+                                    $EnginePower = $stmt->fetchAll();
+                                    foreach ($EnginePower as $EnginePowe) $arr[] = ($EnginePowe['EnginePower']);
+                                    sort($arr, SORT_NUMERIC);
+                                    foreach ($arr as $EnginePowe) {
+                                        $string = "<option value='" . $EnginePowe . "'";
+                                        if (isset($Power) && $Power == $EnginePowe) $string .= "selected";
+                                        $string .= ">" . $EnginePowe . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -153,11 +195,19 @@
                             <div class="form-group">
                                 <label>Fuel:</label>
 
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="Fuel" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT fuel FROM car GROUP BY fuel");
+                                    $stmt->execute();
+                                    $Fuels = $stmt->fetchAll();
+                                    foreach ($Fuels as $fuel) {
+                                        $string = "<option value='" . $fuel["fuel"] . "'";
+                                        if (isset($Fuel) && $Fuel == $fuel["fuel"]) $string .= "selected";
+                                        $string .= ">" . $fuel["fuel"] . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -166,15 +216,34 @@
                             <div class="form-group">
                                 <label>Gearbox:</label>
 
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
+                                <select name="Gearbox" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <option value="Mexaniki" <?php echo (isset($GearBox) && $GearBox == "Mexaniki") ? "Selected" : ""; ?>>Mexaniki</option>
+                                    <option value="Avtomat" <?php echo (isset($GearBox)  && $GearBox == "Avtomat") ? "Selected" : ""; ?>>Avtomat</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label>Color:</label>
+
+                                <select name="Color" class="form-control">
+                                    <option value="All">-- All --</option>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT Color FROM car GROUP BY Color");
+                                    $stmt->execute();
+                                    $Colors = $stmt->fetchAll();
+                                    foreach ($Colors as $color) {
+                                        $string = "<option value='" . $color["Color"] . "'";
+                                        if (isset($Color) && $Color == $color["Color"]) $string .= "selected";
+                                        $string .= ">" . $color["Color"] . "</option>";
+                                        echo $string;
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <div class="form-group">
                                 <label>Price:</label>
 
@@ -198,12 +267,10 @@
                                     <option value="">-- All --</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
-
-
-                    <div class="text-center blue-button">
-                        <a href="#">Search</a>
+                    <div class="text-center ">
+                        <input type="submit" value="Search" class="btn btn-primary btn-lg">
                     </div>
                 </form>
             </div>
@@ -214,16 +281,19 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-1-720x480.jpg" alt="">
+                            <a href="car-details.php?id=1">
+                                <div class="thumb">
+                                    <div class="thumb-img">
+                                        <img src="img/product-1-720x480.jpg" alt="">
+
+                                    </div>
+                                    <div class="overlay-content">
+                                        <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <strong><i class="fa fa-cog"></i> Manual</strong>
+                                    </div>
                                 </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
+                            </a>
                             <div class="down-content">
                                 <h4>Lorem ipsum dolor sit amet, consectetur</h4>
 
@@ -235,152 +305,7 @@
                                 </p>
 
                                 <div class="text-button">
-                                    <a href="car-details.html">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-2-720x480.jpg" alt="">
-                                </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
-
-                                <br>
-
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
-
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
-
-                                <div class="text-button">
-                                    <a href="car-details.html">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-3-720x480.jpg" alt="">
-                                </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
-
-                                <br>
-
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
-
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
-
-                                <div class="text-button">
-                                    <a href="car-details.html">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-4-720x480.jpg" alt="">
-                                </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
-
-                                <br>
-
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
-
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
-
-                                <div class="text-button">
-                                    <a href="car-details.html">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-5-720x480.jpg" alt="">
-                                </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
-
-                                <br>
-
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
-
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
-
-                                <div class="text-button">
-                                    <a href="car-details.html">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <div class="thumb">
-                                <div class="thumb-img">
-                                    <img src="img/product-6-720x480.jpg" alt="">
-                                </div>
-                                <div class="overlay-content">
-                                    <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <strong><i class="fa fa-cog"></i> Manual</strong>
-                                </div>
-                            </div>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
-
-                                <br>
-
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
-
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
-
-                                <div class="text-button">
-                                    <a href="car-details.html">View More</a>
+                                    <a href="car-details.php?id=1">View More</a>
                                 </div>
                             </div>
                         </div>
@@ -417,18 +342,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <ul>
-                                    <li><a href="inde.html"><i class="fa fa-stop"></i>Home</a></li>
-                                    <li><a href="about.html"><i class="fa fa-stop"></i>About</a></li>
-                                    <li><a href="team.html"><i class="fa fa-stop"></i>Team</a></li>
-                                    <li><a href="contact.html"><i class="fa fa-stop"></i>Contact Us</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li><a href="faq.html"><i class="fa fa-stop"></i>FAQ</a></li>
-                                    <li><a href="testimonials.html"><i class="fa fa-stop"></i>Testimonials</a></li>
-                                    <li><a href="blog.html"><i class="fa fa-stop"></i>Blog</a></li>
-                                    <li><a href="terms.html"><i class="fa fa-stop"></i>Terms</a></li>
+                                    <li><a href="index.php"><i class="fa fa-stop"></i>Home</a></li>
+                                    <li><a href="cars.php"><i class="fa fa-stop"></i>Cars</a></li>
+                                    <li><a href="about-us.html"><i class="fa fa-stop"></i>About</a></li>
+                                    <li><a href="contact.php"><i class="fa fa-stop"></i>Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -439,10 +356,10 @@
                         <div class="footer-heading">
                             <h4>Contact Information</h4>
                         </div>
-                        <p><i class="fa fa-map-marker"></i> 212 Barrington Court New York, ABC</p>
+                        <p><i class="fa fa-map-marker"></i>Yeni Yasamal/Baku</p>
                         <ul>
-                            <li><span>Phone:</span><a href="#">+1 333 4040 5566</a></li>
-                            <li><span>Email:</span><a href="#">contact@company.com</a></li>
+                            <li><span>Phone:</span><a href="#">+994 55 844 88 31</a></li>
+                            <li><span>Email:</span><a href="#">Mega.Cferli@gmail.com</a></li>
                         </ul>
                     </div>
                 </div>
@@ -451,17 +368,100 @@
     </footer>
 
     <div class="sub-footer">
-        <p>Copyright © 2020 Company Name - Template by: <a href="https://www.phpjabbers.com/">PHPJabbers.com</a></p>
+        <p>Copyright © 2022 Nejat Jafarli</p>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+    <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')
+    </script>
 
     <script src="js/vendor/bootstrap.min.js"></script>
 
     <script src="js/datepicker.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        function GetDataForMake(make) {
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    function onlyUnique(value, index, self) {
+                        return self.indexOf(value) === index;
+                    }
+                    var response = JSON.parse(this.responseText);
+
+                    let CarType = [];
+                    let models = [];
+                    let EngineSize = [];
+                    let Power = [];
+                    let Fuel = [];
+                    let GearBox = [];
+                    let Color = [];
+                    for (var i = 0; i < response.length; i++) {
+
+                        CarType.push(response[i].CarType);
+                        models.push(response[i].Model);
+                        EngineSize.push(response[i].Engine);
+                        Power.push(response[i].EnginePower);
+                        Fuel.push(response[i].Fuel);
+                        GearBox.push(response[i].GearBox);
+                        Color.push(response[i].Color);
+                    }
+
+                    CarType = CarType.filter(onlyUnique);
+                    models = models.filter(onlyUnique);
+                    EngineSize = EngineSize.filter(onlyUnique);
+                    Power = Power.filter(onlyUnique);
+                    Fuel = Fuel.filter(onlyUnique);
+                    GearBox = GearBox.filter(onlyUnique);
+                    Color = Color.filter(onlyUnique);
+
+                    let CarTypeSelect = document.querySelector("[name = 'CarType']");
+                    let ModelSelect = document.querySelector("[name = 'Model']");
+                    let EngineSizeSelect = document.querySelector("[name = 'EngineSize']");
+                    let PowerSelect = document.querySelector("[name = 'Power']");
+                    let FuelSelect = document.querySelector("[name = 'Fuel']");
+                    let GearBoxSelect = document.querySelector("[name = 'GearBox']");
+                    let ColorSelect = document.querySelector("[name = 'Color']");
+
+                    let CarTypeHtml = "";
+                    let modelsHtml = "";
+                    let EngineSizeHtml = "";
+                    let PowerHtml = "";
+                    let FuelHtml = "";
+                    let GearBoxHtml = "";
+                    let ColorHtml = "";
+
+                    for (var i = 0; i < CarType.length; i++)
+                        CarTypeHtml += "<option value='" + CarType[i] + "'>" + CarType[i] + "</option>";
+                    for (var i = 0; i < models.length; i++)
+                        modelsHtml += "<option value='" + models[i] + "'>" + models[i] + "</option>";
+                    for (var i = 0; i < EngineSize.length; i++)
+                        EngineSizeHtml += "<option value='" + EngineSize[i] + "'>" + EngineSize[i] + "</option>";
+                    for (var i = 0; i < Power.length; i++)
+                        PowerHtml += "<option value='" + Power[i] + "'>" + Power[i] + "</option>";
+                    for (var i = 0; i < Fuel.length; i++)
+                        FuelHtml += "<option value='" + Fuel[i] + "'>" + Fuel[i] + "</option>";
+                    for (var i = 0; i < GearBox.length; i++)
+                        GearBoxHtml += "<option value='" + GearBox[i] + "'>" + GearBox[i] + "</option>";
+                    for (var i = 0; i < Color.length; i++)
+                        ColorHtml += "<option value='" + Color[i] + "'>" + Color[i] + "</option>";
+
+                    CarTypeSelect.innerHTML = CarTypeHtml;
+                    ModelSelect.innerHTML = modelsHtml;
+                    EngineSizeSelect.innerHTML = EngineSizeHtml;
+                    PowerSelect.innerHTML = PowerHtml;
+                    FuelSelect.innerHTML = FuelHtml;
+                    GearBoxSelect.innerHTML = GearBoxHtml;
+                    ColorSelect.innerHTML = ColorHtml;
+
+                }
+            };
+            xmlhttp.open("GET", "getCars.php?query=" + make, true);
+            xmlhttp.send();
+        }
+    </script>
 </body>
 
 </html>

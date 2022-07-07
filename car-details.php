@@ -28,27 +28,16 @@
                 <div class="row">
                     <div class="col-md-12">
                         <button id="primary-nav-button" type="button">Menu</button>
-                        <a href="index.html"><div class="logo">
+                        <a href="index.php"><div class="logo">
                             <img src="img/logo.png" alt="Venue Logo">
                         </div></a>
                         <nav id="primary-nav" class="dropdown cf">
                             <ul class="dropdown menu">
-                                <li><a href="index.html">Home</a></li>
-
-                                <li class='active'><a href="cars.html">Cars</a></li>
-
-                                <li>
-                                    <a href="#">About</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="team.html">Team</a></li>
-                                        <li><a href="testimonials.html">Testimonials</a></li>
-                                        <li><a href="faq.html">FAQ</a></li>
-                                        <li><a href="terms.html">Terms</a></li>
-                                    </ul>
-                                </li>
-
-                                <li><a class="nav-link" href="contact.html">Contact Us</a></li>
+                                <li><a href="index.php">Home</a></li>
+                                <li class='active'><a href="cars.php">Cars</a></li>
+                                
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a class="nav-link" href="contact.php">Contact Us</a></li>
                             </ul>
                         </nav><!-- / #primary-nav -->
                     </div>
@@ -163,14 +152,6 @@
 
                        <li class="list-group-item">
                             <div class="clearfix">
-                                 <span class="pull-left">First registration</span>
-
-                                 <strong class="pull-right">05/2010</strong>
-                            </div>
-                       </li>
-
-                       <li class="list-group-item">
-                            <div class="clearfix">
                                  <span class="pull-left">Mileage</span>
 
                                  <strong class="pull-right">5000 km</strong>
@@ -207,22 +188,6 @@
                                  <span class="pull-left">Gearbox</span>
 
                                  <strong class="pull-right">Manual</strong>
-                            </div>
-                       </li>
-
-                       <li class="list-group-item">
-                            <div class="clearfix">
-                                 <span class="pull-left">Number of seats</span>
-
-                                 <strong class="pull-right">4</strong>
-                            </div>
-                       </li>
-
-                       <li class="list-group-item">
-                            <div class="clearfix">
-                                 <span class="pull-left">Doors</span>
-
-                                 <strong class="pull-right">2/3</strong>
                             </div>
                        </li>
 

@@ -292,10 +292,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <ul>
-                                    <li><a href="inde.html"><i class="fa fa-stop"></i>Home</a></li>
-                                    <li><a href="about.html"><i class="fa fa-stop"></i>About</a></li>
-                                    <li><a href="team.html"><i class="fa fa-stop"></i>Team</a></li>
-                                    <li><a href="contact.html"><i class="fa fa-stop"></i>Contact Us</a></li>
+                                    <li><a href="index.php"><i class="fa fa-stop"></i>Home</a></li>
+                                    <li><a href="cars.php"><i class="fa fa-stop"></i>Cars</a></li>
+                                    <li><a href="about-us.html"><i class="fa fa-stop"></i>About</a></li>
+                                    <li><a href="contact.php"><i class="fa fa-stop"></i>Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -306,8 +306,8 @@
                         <div class="footer-heading">
                             <h4>Contact Information</h4>
                         </div>
-                        <p><i class="fa fa-map-marker"></i> Yeni Yasamal/Baku</p>
                         <ul>
+                            <p><i class="fa fa-map-marker"></i> Yeni Yasamal/Baku</p>
                             <li><span>Phone:</span><a href="#">+994 55 844 88 31</a></li>
                             <li><span>Email:</span><a href="#">Mega.Ceferli@gmail.com</a></li>
                         </ul>
