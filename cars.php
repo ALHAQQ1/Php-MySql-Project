@@ -1,8 +1,48 @@
 <?php
+
+use function PHPSTORM_META\sql_injection_subst;
+
 require_once 'db.php';
 require_once 'functions.php';
 
 getParams();
+
+$sql = "SELECT * FROM `car`";
+
+if (isset($SellerName)) {
+    $sql = "SELECT * FROM car WHERE SellerName = :SellerName";
+    $sql .= " ORDER BY Views DESC";
+    $sql .= " LIMIT 10";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':SellerName', $SellerName);
+} else {
+    include 'getCarForQuery.php';
+    $sql .= " ORDER BY Views DESC";
+    $sql .= " LIMIT 50";
+    $stmt = $conn->prepare($sql);
+
+    if (isset($Make) && $Make != "All")
+        $stmt->bindParam(':Make', $Make);
+    if (isset($Model) && $Model != "All")
+        $stmt->bindParam(':Model', $Model);
+    if (isset($Color) && $Color != "All")
+        $stmt->bindParam(':Color', $Color);
+    if (isset($CarType) && $CarType != "All")
+        $stmt->bindParam(':CarType', $CarType);
+    if (isset($EngineSize) && $EngineSize != "All")
+        $stmt->bindParam(':Engine', $EngineSize);
+    if (isset($Power) && $Power != "All")
+        $stmt->bindParam(':Power', $Power);
+    if (isset($Fuel) && $Fuel != "All")
+        $stmt->bindParam(':Fuel', $Fuel);
+    if (isset($Gearbox) && $Gearbox != "All")
+        $stmt->bindParam(':Gearbox', $Gearbox);
+}
+$stmt->execute();
+$cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +51,7 @@ getParams();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PHPJabbers.com | Free Car Dealer Website Template</title>
+    <title>Car Dealer</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,7 +124,17 @@ getParams();
                                 <select name="CarType" class="form-control">
                                     <option value="All">--All--</option>
                                     <?php
-                                    $stmt = $conn->prepare("SELECT CarType FROM car GROUP BY CarType");
+
+                                    $sql = "SELECT CarType FROM car ";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY CarType";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+                                        $sql .= " GROUP BY CarType";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $Vehicle = $stmt->fetchAll();
                                     foreach ($Vehicle as $Veh) {
@@ -126,7 +176,17 @@ getParams();
                                 <select name="Model" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $stmt = $conn->prepare("SELECT Model FROM car GROUP BY Model");
+                                    $sql = "SELECT Model FROM car ";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY Model";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+
+                                        $sql .= " GROUP BY Model";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $models = $stmt->fetchAll();
                                     foreach ($models as $model) {
@@ -150,7 +210,16 @@ getParams();
                                     <option value="All">-- All --</option>
                                     <?php
                                     $arr = [];
-                                    $stmt = $conn->prepare("SELECT Engine FROM car GROUP BY Engine");
+                                    $sql = "SELECT Engine FROM car ";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY Engine";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+                                        $sql .= " GROUP BY Engine";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $Engines = $stmt->fetchAll();
                                     foreach ($Engines as $engine) $arr[] = ($engine['Engine']);
@@ -175,7 +244,16 @@ getParams();
                                     <option value="All">-- All --</option>
                                     <?php
                                     $arr = [];
-                                    $stmt = $conn->prepare("SELECT EnginePower FROM car GROUP BY EnginePower");
+                                    $sql = "SELECT EnginePower FROM car";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY EnginePower";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+                                        $sql .= " GROUP BY EnginePower";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $EnginePower = $stmt->fetchAll();
                                     foreach ($EnginePower as $EnginePowe) $arr[] = ($EnginePowe['EnginePower']);
@@ -198,7 +276,16 @@ getParams();
                                 <select name="Fuel" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $stmt = $conn->prepare("SELECT fuel FROM car GROUP BY fuel");
+                                    $sql = "SELECT fuel FROM car ";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY fuel";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+                                        $sql .= " GROUP BY fuel";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $Fuels = $stmt->fetchAll();
                                     foreach ($Fuels as $fuel) {
@@ -230,7 +317,16 @@ getParams();
                                 <select name="Color" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $stmt = $conn->prepare("SELECT Color FROM car GROUP BY Color");
+                                    $sql = "SELECT Color FROM car ";
+                                    if (isset($Make) && $Make!="All") {
+                                        $sql .= " WHERE Make = :Make";
+                                        $sql .= " GROUP BY Color";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindParam(':Make', $Make);
+                                    } else {
+                                        $sql .= " GROUP BY Color";
+                                        $stmt = $conn->prepare($sql);
+                                    }
                                     $stmt->execute();
                                     $Colors = $stmt->fetchAll();
                                     foreach ($Colors as $color) {
@@ -279,37 +375,55 @@ getParams();
         <section class="featured-places">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="featured-item">
-                            <a href="car-details.php?id=1">
-                                <div class="thumb">
-                                    <div class="thumb-img">
-                                        <img src="img/product-1-720x480.jpg" alt="">
+                    <!--  -->
+                    <?php
+                    foreach ($cars as $key) {
+                        $string = '<div class="col-md-4 col-sm-6 col-xs-12">';
+                        $string .= '<div class="featured-item">';
+                        $string .= '<a href="car-details.php?id=' . $key["id"] . '">'; // bu id deyismelidi
+                        $string .= '<div class="thumb">';
+                        $string .= '<div class="thumb-img">';
 
-                                    </div>
-                                    <div class="overlay-content">
-                                        <strong><i class="fa fa-dashboard"></i> 130 000km</strong> &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <strong><i class="fa fa-cube"></i> 1800 cc</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <strong><i class="fa fa-cog"></i> Manual</strong>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="down-content">
-                                <h4>Lorem ipsum dolor sit amet, consectetur</h4>
 
-                                <br>
+                        //get image from database
+                        $stmt = $conn->prepare("SELECT * FROM images WHERE CarId = :id");
+                        $stmt->bindParam(":id", $key["id"]);
+                        $stmt->execute();
+                        $car = $stmt->fetch();
 
-                                <p>190 hp / Petrol / 2008 / Used vehicle</p>
+                        $string .= '<img class="MyClass2" src="Car-image/' . $car["Value"] . '" alt="' . $car["Value"] . '">';
+                        $string .= '</div>';
+                        $string .= '<div class="overlay-content">';
+                        $string .= '<strong><i class="fa fa-dashboard"></i> ' . $key["Milage"] . 'km</strong> &nbsp;&nbsp;&nbsp;&nbsp;'; // KM gelmelidi
+                        $string .= '<strong><i class="fa fa-cube"></i> ' . $key["Engine"] . '</strong>&nbsp;&nbsp;&nbsp;&nbsp;'; //mator gucu
+                        $string .= '<strong><i class="fa fa-cog"></i> ' . $key["Gearbox"] . '</strong>&nbsp;&nbsp;&nbsp;&nbsp;'; //gearbox
+                        $string .= '<strong><i class="fa fa-map-marker"></i> ' . $key["SellerCity"] . '</strong>'; //City
+                        $string .= '</div>';
+                        $string .= '</div>';
+                        $string .= '</a>';
+                        $string .= '<div class="down-content">';
+                        $string .= '<h4>' . $key["Make"] . ' ' . $key["Model"] . '</h4>'; // masin adi gelmelidi
+                        $string .= '<br>';
+                        $IsNew;
 
-                                <p><span><del><sup>$</sup>11999.00 </del> <strong><sup>$</sup>11779.00</strong></span>
-                                </p>
+                        if ($key["Milage"] > 0)
+                            $IsNew = "Used Vehicle";
+                        else
+                            $IsNew = "New Vehicle";
 
-                                <div class="text-button">
-                                    <a href="car-details.php?id=1">View More</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        $string .= ' <p>' . $key["EnginePower"] . 'hp / ' . $key["Fuel"] . ' / ' . $key["Year"] . ' / ' . $IsNew . '</p>'; // Mator gucu Benzin Novu il ve teze olup olmamasi gelmelidi
+                        $string .= ' <p><span><strong>' . $key["Price"] . ' ' . $key["PriceType"] . '</strong></span>'; //qiymet
+                        $string .= '</p>';
+                        $string .= '<div class="text-button">';
+                        $string .= '<a href="car-details.php?id=' . $key["id"] . '">View More</a>'; // ID gelmelidi
+                        $string .= '</div>';
+                        $string .= '</div>';
+                        $string .= '</div>';
+                        $string .= '</div>';
+                        echo $string;
+                    }
+
+                    ?>
                 </div>
             </div>
         </section>
