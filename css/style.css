@@ -1258,19 +1258,15 @@ footer .contact-info ul li a {
 }
 
 .MyClass{
-  min-width: 185px!important;
-  max-width: 185px!important;
-  min-height: 185px!important;
-  max-height: 185px!important;
+  min-width: 150px!important;
+  width: 185px!important;
+  min-height: 150px!important;
+  height: 185px!important;
   object-fit: cover;
   cursor: pointer;
-
-}
-.MyClass2{
   
-  width: 100%;
-  cursor: pointer;
 }
+
 
 @media (max-width:992px) {
 

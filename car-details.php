@@ -379,7 +379,7 @@ if (isset($id)) {
     <script>
         const mainImg = document.getElementById("head-image");
         const Images = document.querySelectorAll('.MyClass');
-        Images[0].classList.add("active");
+        Images[0].classList.add("actived");
 
         Images.forEach(x => {
             x.addEventListener('click', function() {
