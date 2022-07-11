@@ -7,7 +7,15 @@ require_once 'functions.php';
 getParams();
 if (isset($id)) {
 
-    $sql = "SELECT * FROM `car` WHERE car.id=:id LIMIT 1";
+    $sql  = "SELECT cars.id as id ,ColorName as Color,";
+    $sql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
+    $sql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
+    $sql .= " FROM cars INNER JOIN elan ON";
+    $sql .= " cars.id = elan.CarId INNER JOIN City ON elan.CityId = City.id";
+    $sql .= " INNER JOIN Gearbox ON cars.GearboxId = Gearbox.id";
+    $sql .= " INNER JOIN Fuel ON cars.Fuelid = Fuel.id";
+    $sql .= " INNER JOIN Color ON cars.ColorId = Color.id";
+    $sql .= " INNER JOIN CarType ON cars.CarTypeId = CarType.id WHERE cars.id = :id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $id);
     $stmt->execute();

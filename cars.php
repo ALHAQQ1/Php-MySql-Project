@@ -5,17 +5,23 @@ require_once 'functions.php';
 
 getParams();
 
-$sql = "SELECT * FROM `car`";
+$sql  = "SELECT cars.id as id ,ColorName as Color,";
+$sql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
+$sql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
+$sql .= " FROM cars INNER JOIN elan ON";
+$sql .= " cars.id = elan.CarId INNER JOIN City ON elan.CityId = City.id";
+$sql .= " INNER JOIN gearbox ON cars.GearboxId = Gearbox.id";
+$sql .= " INNER JOIN fuel ON cars.Fuelid = Fuel.id";
+$sql .= " INNER JOIN color ON cars.ColorId = Color.id";
+$sql .= " INNER JOIN carType ON cars.CarTypeId = CarType.id";
 
 if (isset($SellerName)) {
-    $sql = "SELECT * FROM car WHERE SellerName = :SellerName";
-    $sql .= " ORDER BY Views DESC";
-    $sql .= " LIMIT 10";
+    $sql .= " WHERE SellerName = :SellerName";
+    $sql .= " LIMIT 50";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':SellerName', $SellerName);
 } else {
     include 'getCarForQuery.php';
-    $sql .= " ORDER BY Views DESC";
     $sql .= " LIMIT 50";
     $stmt = $conn->prepare($sql);
 
@@ -113,9 +119,9 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <li><a href="about-us.html">About Us</a></li>
 
                                 <li><a class="nav-link" href="contact.php">Contact Us</a></li>
-                                    <li>
-                                        <button onclick="ShowModal(this.value)" value="Login" class="btn" id="myBtn">Login</button>
-                                    </li>
+                                <li>
+                                    <button onclick="ShowModal(this.value)" value="Login" class="btn" id="myBtn">Login</button>
+                                </li>
                             </ul>
                         </nav><!-- / #primary-nav -->
                     </div>
@@ -149,22 +155,21 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <option value="All">--All--</option>
                                     <?php
 
-                                    $sql = "SELECT CarType FROM car ";
+                                    $sql = "SELECT * FROM CarType ";
                                     if (isset($Make) && $Make != "All") {
-                                        $sql .= " WHERE Make = :Make";
-                                        $sql .= " GROUP BY CarType";
+                                        $sql .= " Inner Join cars on CarType.id=CarTypeId";
+                                        $sql .= " WHERE Make=:Make";
                                         $stmt = $conn->prepare($sql);
                                         $stmt->bindParam(':Make', $Make);
                                     } else {
-                                        $sql .= " GROUP BY CarType";
                                         $stmt = $conn->prepare($sql);
                                     }
                                     $stmt->execute();
                                     $Vehicle = $stmt->fetchAll();
                                     foreach ($Vehicle as $Veh) {
-                                        $string = "<option value='" . $Veh['CarType'] . "'";
-                                        if (isset($CarType) && $CarType == $Veh['CarType']) $string .= "selected";
-                                        $string .= ">" . $Veh['CarType'] . "</option>";
+                                        $string = "<option value='" . $Veh['CarTypeName'] . "'";
+                                        if (isset($CarType) && $CarType == $Veh['CarTypeName']) $string .= "selected";
+                                        $string .= ">" . $Veh['CarTypeName'] . "</option>";
                                         echo $string;
                                     }
                                     ?>
@@ -179,7 +184,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="Make" onchange="GetDataForMake(this.value)" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $stmt = $conn->prepare("SELECT Make FROM car GROUP BY Make");
+                                    $stmt = $conn->prepare("SELECT Make FROM cars GROUP BY Make");
                                     $stmt->execute();
                                     $makes = $stmt->fetchAll();
                                     foreach ($makes as $make) {
@@ -199,7 +204,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="Model" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $sql = "SELECT Model FROM car ";
+                                    $sql = "SELECT Model FROM cars ";
                                     if (isset($Make) && $Make != "All") {
                                         $sql .= " WHERE Make = :Make";
                                         $sql .= " GROUP BY Model";
@@ -233,7 +238,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <option value="All">-- All --</option>
                                     <?php
                                     $arr = [];
-                                    $sql = "SELECT Engine FROM car ";
+                                    $sql = "SELECT Engine FROM cars ";
                                     if (isset($Make) && $Make != "All") {
                                         $sql .= " WHERE Make = :Make";
                                         $sql .= " GROUP BY Engine";
@@ -267,7 +272,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <option value="All">-- All --</option>
                                     <?php
                                     $arr = [];
-                                    $sql = "SELECT EnginePower FROM car";
+                                    $sql = "SELECT EnginePower FROM cars";
                                     if (isset($Make) && $Make != "All") {
                                         $sql .= " WHERE Make = :Make";
                                         $sql .= " GROUP BY EnginePower";
@@ -299,22 +304,22 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="Fuel" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $sql = "SELECT fuel FROM car ";
+                                    $sql = "SELECT * FROM fuel ";
                                     if (isset($Make) && $Make != "All") {
+
+                                        $sql .= " INNER JOIN cars ON fuel.id = cars.Fuelid";
                                         $sql .= " WHERE Make = :Make";
-                                        $sql .= " GROUP BY fuel";
                                         $stmt = $conn->prepare($sql);
                                         $stmt->bindParam(':Make', $Make);
                                     } else {
-                                        $sql .= " GROUP BY fuel";
                                         $stmt = $conn->prepare($sql);
                                     }
                                     $stmt->execute();
                                     $Fuels = $stmt->fetchAll();
                                     foreach ($Fuels as $fuel) {
-                                        $string = "<option value='" . $fuel["fuel"] . "'";
-                                        if (isset($Fuel) && $Fuel == $fuel["fuel"]) $string .= "selected";
-                                        $string .= ">" . $fuel["fuel"] . "</option>";
+                                        $string = "<option value='" . $fuel["FuelName"] . "'";
+                                        if (isset($Fuel) && $Fuel == $fuel["FuelName"]) $string .= "selected";
+                                        $string .= ">" . $fuel["FuelName"] . "</option>";
                                         echo $string;
                                     }
                                     ?>
@@ -329,22 +334,21 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="Gearbox" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $sql = "SELECT Gearbox FROM car ";
+                                    $sql = "SELECT * FROM gearbox ";
                                     if (isset($Make) && $Make != "All") {
+                                        $sql .= " INNER JOIN cars ON gearbox.id = cars.GearboxId";
                                         $sql .= " WHERE Make = :Make";
-                                        $sql .= " GROUP BY Gearbox";
                                         $stmt = $conn->prepare($sql);
                                         $stmt->bindParam(':Make', $Make);
                                     } else {
-                                        $sql .= " GROUP BY Gearbox";
                                         $stmt = $conn->prepare($sql);
                                     }
                                     $stmt->execute();
                                     $Fuels = $stmt->fetchAll();
                                     foreach ($Fuels as $fuel) {
-                                        $string = "<option value='" . $fuel["Gearbox"] . "'";
-                                        if (isset($Gearbox) && $Gearbox == $fuel["Gearbox"]) $string .= "selected";
-                                        $string .= ">" . $fuel["Gearbox"] . "</option>";
+                                        $string = "<option value='" . $fuel["GearboxName"] . "'";
+                                        if (isset($Gearbox) && $Gearbox == $fuel["GearboxName"]) $string .= "selected";
+                                        $string .= ">" . $fuel["GearboxName"] . "</option>";
                                         echo $string;
                                     } ?>
                                 </select>
@@ -357,22 +361,21 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="Color" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $sql = "SELECT Color FROM car ";
+                                    $sql = "SELECT * FROM color";
                                     if (isset($Make) && $Make != "All") {
+                                        $sql .= " INNER JOIN cars ON Color.id = cars.ColorId";
                                         $sql .= " WHERE Make = :Make";
-                                        $sql .= " GROUP BY Color";
                                         $stmt = $conn->prepare($sql);
                                         $stmt->bindParam(':Make', $Make);
                                     } else {
-                                        $sql .= " GROUP BY Color";
                                         $stmt = $conn->prepare($sql);
                                     }
                                     $stmt->execute();
                                     $Fuels = $stmt->fetchAll();
                                     foreach ($Fuels as $fuel) {
-                                        $string = "<option value='" . $fuel["Color"] . "'";
-                                        if (isset($Fuel) && $Fuel == $fuel["Color"]) $string .= "selected";
-                                        $string .= ">" . $fuel["Color"] . "</option>";
+                                        $string = "<option value='" . $fuel["ColorName"] . "'";
+                                        if (isset($Fuel) && $Fuel == $fuel["ColorName"]) $string .= "selected";
+                                        $string .= ">" . $fuel["ColorName"] . "</option>";
                                         echo $string;
                                     }
                                     ?>
@@ -386,22 +389,24 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="City" class="form-control">
                                     <option value="All">-- All --</option>
                                     <?php
-                                    $sql = "SELECT SellerCity FROM car ";
+                                    $sql = "SELECT CityName FROM cars INNER JOIN elan";
+                                    $sql .= " ON cars.id = elan.CarId INNER JOIN city ON elan.CityId = city.id";
+
                                     if (isset($Make) && $Make != "All") {
                                         $sql .= " WHERE Make = :Make";
-                                        $sql .= " GROUP BY SellerCity";
+                                        $sql .= " GROUP BY CityName";
                                         $stmt = $conn->prepare($sql);
                                         $stmt->bindParam(':Make', $Make);
                                     } else {
-                                        $sql .= " GROUP BY SellerCity";
+                                        $sql .= " GROUP BY CityName";
                                         $stmt = $conn->prepare($sql);
                                     }
                                     $stmt->execute();
                                     $Cities = $stmt->fetchAll();
                                     foreach ($Cities as $city) {
-                                        $string = "<option value='" . $city["SellerCity"] . "'";
-                                        if (isset($City) && $City == $city["SellerCity"]) $string .= "selected";
-                                        $string .= ">" . $city["SellerCity"] . "</option>";
+                                        $string = "<option value='" . $city["CityName"] . "'";
+                                        if (isset($City) && $City == $city["CityName"]) $string .= "selected";
+                                        $string .= ">" . $city["CityName"] . "</option>";
                                         echo $string;
                                     }
 
@@ -461,7 +466,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <select style="margin-bottom:0px!important;" name="MinYear" class="form-control">
                                             <option value="All">Min Year</option>
                                             <?php
-                                            $sql = "SELECT Year FROM car ";
+                                            $sql = "SELECT Year FROM cars ";
                                             if (isset($Make) && $Make != "All") {
                                                 $sql .= " WHERE Make = :Make";
                                                 $sql .= " GROUP BY Year";
@@ -488,7 +493,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <select style="margin-bottom:0px!important;" name="MaxYear" class="form-control">
                                             <option value="All">Max Year</option>
                                             <?php
-                                            $sql = "SELECT Year FROM car ";
+                                            $sql = "SELECT Year FROM cars ";
                                             if (isset($Make) && $Make != "All") {
                                                 $sql .= " WHERE Make = :Make";
                                                 $sql .= " GROUP BY Year";
@@ -516,31 +521,6 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
 
 
-                    <!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                <label>Price:</label>
-
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                <label>Mileage:</label>
-
-                                <select class="form-control">
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                    <option value="">-- All --</option>
-                                </select>
-                            </div>
-                        </div> -->
                     <div class="text-center">
                         <input style="margin-top:30px; width:33%;" type="submit" value="Search" class="btn btn-primary btn-lg">
                     </div>
@@ -697,15 +677,14 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     let Color = [];
                     for (var i = 0; i < response.length; i++) {
 
-                        CarType.push(response[i].CarType);
+                        CarType.push(response[i].CarTypeName);
                         models.push(response[i].Model);
                         EngineSize.push(response[i].Engine);
                         Power.push(response[i].EnginePower);
-                        Fuel.push(response[i].Fuel);
-                        GearBox.push(response[i].Gearbox);
-                        Color.push(response[i].Color);
-
-                        Cities.push(response[i].SellerCity);
+                        Fuel.push(response[i].FuelName);
+                        GearBox.push(response[i].GearboxName);
+                        Color.push(response[i].ColorName);
+                        Cities.push(response[i].CityName);
                         Years.push(response[i].Year);
                     }
 
@@ -739,7 +718,32 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     let GearBoxHtml = "<option value='All'>--All--</option>";
                     let ColorHtml = "<option value='All'>--All--</option>";
                     let CityHtml = "<option value='All'>--All--</option>";
-                    let YearHtml = "<option value='All'>--All--</option>";
+                    let MinYearHtml = "<option value='All'>Min Year</option>";
+                    let MaxYearHtml = "<option value='All'>Max Year</option>";
+
+                    //remove last 1 char andconvert float array and sort enginesize and power
+                    EngineSize = EngineSize.map(function(item) {
+                        return parseFloat(String(item).replaceAll(",", "."));
+                    });
+                    Power = Power.map(function(item) {
+                        return parseFloat(String(item).replaceAll(",", "."));
+                    });
+                    EngineSize.sort(function(a, b) {
+                        return a - b;
+                    });
+                    Power.sort(function(a, b) {
+                        return a - b;
+                    });
+
+                    //convert again string
+                    EngineSize = EngineSize.map(function(item) {
+                        return String(item).replaceAll(".", ",") + " L";
+                    });
+                    Power = Power.map(function(item) {
+                        return String(item).replaceAll(".", ",");
+                    });
+
+
 
                     for (var i = 0; i < CarType.length; i++)
                         CarTypeHtml += "<option value='" + CarType[i] + "'>" + CarType[i] + "</option>";
@@ -757,8 +761,22 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         ColorHtml += "<option value='" + Color[i] + "'>" + Color[i] + "</option>";
                     for (var i = 0; i < Cities.length; i++)
                         CityHtml += "<option value='" + Cities[i] + "'>" + Cities[i] + "</option>";
+
+                    //sort years asc
+                    Years = Years.sort(function(a, b) {
+                        return a - b;
+                    });
+
                     for (var i = 0; i < Years.length; i++)
-                        YearHtml += "<option value='" + Years[i] + "'>" + Years[i] + "</option>";
+                        MinYearHtml += "<option value='" + Years[i] + "'>" + Years[i] + "</option>";
+
+                    //sort years desc
+                    Years = Years.sort(function(a, b) {
+                        return b - a;
+                    });
+
+                    for (var i = 0; i < Years.length; i++)
+                        MaxYearHtml += "<option value='" + Years[i] + "'>" + Years[i] + "</option>";
 
 
                     CarTypeSelect.innerHTML = CarTypeHtml;
@@ -769,8 +787,8 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     GearBoxSelect.innerHTML = GearBoxHtml;
                     ColorSelect.innerHTML = ColorHtml;
                     CitySelect.innerHTML = CityHtml;
-                    MinYearSelect.innerHTML = YearHtml;
-                    MaxYearSelect.innerHTML = YearHtml;
+                    MinYearSelect.innerHTML = MinYearHtml;
+                    MaxYearSelect.innerHTML = MaxYearHtml;
                 }
             };
             xmlhttp.open("GET", "getCars.php?query=" + make, true);
