@@ -28,23 +28,23 @@ if (isset($MinMileage) && is_numeric($MinMileage)) $listOfWhereCommand[] = "Mill
 if (isset($MaxMileage) && is_numeric($MaxMileage)) $listOfWhereCommand[] = "MillAge <= :MaxMileage";
 
 if (!isset($lastId))
-    if (count($listOfWhereCommand) > 0) $sql .= " AND" . implode(" AND ", $listOfWhereCommand);
+    if (count($listOfWhereCommand) > 0) $sql .= " AND " . implode(" AND ", $listOfWhereCommand);
 
 
 if (isset($lastId)) {
 
-    $sql  = " SELECT cars.id as id,UserId,elan.id as elanid,ColorName as Color,";
-    $sql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
-    $sql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
-    $sql .= " FROM cars,elan,City,gearbox,fuel,color,carType WHERE ";
-    $sql .= " cars.id = elan.CarId ";
-    $sql .= " AND elan.CityId = City.id";
-    $sql .= " AND cars.GearboxId = Gearbox.id";
-    $sql .= " AND cars.Fuelid = Fuel.id";
-    $sql .= " AND cars.ColorId = Color.id";
-    $sql .= " AND cars.CarTypeId = CarType.id ";
+    $MySql  = " SELECT cars.id as id,UserId,elan.id as elanid,ColorName as Color,";
+    $MySql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
+    $MySql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
+    $MySql .= " FROM cars,elan,City,gearbox,fuel,color,carType WHERE ";
+    $MySql .= " cars.id = elan.CarId ";
+    $MySql .= " AND elan.CityId = City.id";
+    $MySql .= " AND cars.GearboxId = Gearbox.id";
+    $MySql .= " AND cars.Fuelid = Fuel.id";
+    $MySql .= " AND cars.ColorId = Color.id";
+    $MySql .= " AND cars.CarTypeId = CarType.id ";
 
-    if (count($listOfWhereCommand) > 0) $MySql .= " AND" . implode(" AND ", $listOfWhereCommand);
+    if (count($listOfWhereCommand) > 0) $MySql .= " AND " . implode(" AND ", $listOfWhereCommand);
 
     $MySql .= " ORDER BY cars.id ASC LIMIT 21";
 

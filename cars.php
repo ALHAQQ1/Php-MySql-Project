@@ -20,7 +20,7 @@ if (isset($favorite)) $sql .= " ,favories";
 $sql .= " WHERE  cars.id = elan.CarId ";
 if (isset($favorite)) {
     $sql .= " AND favories.ElanId=elan.id";
-    $sql .= " AND favories.UserId = :userId";
+    $sql .= " AND favories.UserId = :FavuserId";
 }
 $sql .= " AND elan.CityId = City.id";
 $sql .= " AND cars.GearboxId = Gearbox.id";
@@ -36,7 +36,7 @@ if (isset($SellerName)) {
 } else if (isset($favorite)) {
     $sql .= " ORDER BY cars.id";
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':userId', $_SESSION["user"]['id']);
+    $stmt->bindParam(':FavuserId', $_SESSION["user"]['id']);
 } else {
     include 'getCarForQuery.php';
     $sql .= " ORDER BY cars.id LIMIT 51";
@@ -480,12 +480,14 @@ include 'header.php';
                 <!--  -->
                 <?php
                 $lastId = 0;
+                $favories;
                 if (isset($_SESSION['user'])) {
                     $stmt = $conn->prepare("SELECT * FROM `favories` WHERE UserId=:UserId");
                     $stmt->bindParam(":UserId", $_SESSION['user']['id']);
                     $stmt->execute();
                     $favories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
+
 
                 foreach ($cars as $key) {
                     $string = '<div  class="col-md-4 col-sm-6 col-xs-12">';
@@ -612,14 +614,14 @@ include 'header.php';
                     let Color = [];
                     for (var i = 0; i < response.length; i++) {
 
-                        CarType.push(response[i].CarTypeName);
+                        CarType.push(response[i].CarType);
                         models.push(response[i].Model);
                         EngineSize.push(response[i].Engine);
                         Power.push(response[i].EnginePower);
-                        Fuel.push(response[i].FuelName);
-                        GearBox.push(response[i].GearboxName);
-                        Color.push(response[i].ColorName);
-                        Cities.push(response[i].CityName);
+                        Fuel.push(response[i].Fuel);
+                        GearBox.push(response[i].Gearbox);
+                        Color.push(response[i].Color);
+                        Cities.push(response[i].SellerCity);
                         Years.push(response[i].Year);
                     }
 
@@ -736,6 +738,9 @@ include 'header.php';
         }
 
         async function LoadMore(lastId) {
+
+            console.log(<?= json_encode($favories); ?>);
+
             if (LastId == 0)
                 LastId = lastId;
             else
@@ -770,25 +775,41 @@ include 'header.php';
                         let SellerName = response[i].SellerName;
                         let Milage = response[i].Milage;
                         let ElanUserId = response[i].UserId;
-
+                        let elanid = response[i].elanid;
 
                         await asyncAjax("getCarImage.php?id=" + id).then(function(data) {
-                            let image = data;
                             html = '<div class="col-md-4 col-sm-6 col-xs-12">';
-                            html += '<div class="featured-item">';
-                            html += '<a href="car-details.php?id=' + id + '">'; // bu id deyismelidi
+                            html += '<div ';
+                            html += 'onclick="carDetail(' + id + ')" style="cursor:pointer;" '
+                            html += 'class="featured-item">';
                             html += '<div class="thumb">';
                             html += '<div class="thumb-img">';
                             html += '<img style="max-height:300px;min-height:300px;object-fit:cover;" class="MyClass2" src="Car-image/' + data + '" alt="' + data + '">';
                             html += '</div>';
-                            html += '<div class="overlay-content">';
+                            html += '<div style="top:10px;left:5px;" class="overlay-content">';
                             html += '<strong><i class="fa fa-dashboard"></i> ' + Milage + 'km</strong> &nbsp;&nbsp;&nbsp;&nbsp;'; // KM gelmelidi
                             html += '<strong><i class="fa fa-cube"></i> ' + Engine + '</strong>&nbsp;&nbsp;&nbsp;&nbsp;'; //mator gucu
                             html += '<strong><i class="fa fa-cog"></i> ' + Gearbox + '</strong>&nbsp;&nbsp;&nbsp;&nbsp;'; //gearbox
                             html += '<strong><i class="fa fa-map-marker"></i> ' + SellerCity + '</strong>'; //City
+                            <?php
+                            if (isset($favories)) {
+                                $newString = "";
+                                $check = 0;
+                                $style = 'style="font-size:22px; float:right; margin-top:-3px;cursor:pointer;font-weight: bolder;"';
+                                foreach ($favories as $favori) {
+                                    if (isset($_SESSION['user']) && $key['elanid'] == $favori['ElanId']) {
+                                        $newString .= 'html+= \'<a onclick="AddFavorite(this,' . $_SESSION['user']['id'] . ',' . '\'+elanid+\'' . ',1,event)" style="z-index:99" href="javascript:void(0)"><i ' . $style . ' class="fa fa-heart" aria-hidden="true"></i></a>\';';
+                                        $check = 1;
+                                        break;
+                                    }
+                                }
+                                if ($check == 0)
+                                    $newString .= 'html+=\'<a onclick="AddFavorite(this,' . $_SESSION['user']['id'] . ',' . '\'+elanid+\'' . ',0,event)" style="z-index:99" href="javascript:void(0)"><i ' . $style . ' class="fa fa-heart-o" aria-hidden="true"></i></a>\';';
+                                echo $newString . "\n";
+                            }
+                            ?>
                             html += '</div>';
                             html += '</div>';
-                            html += '</a>';
                             html += '<div class="down-content">';
                             html += '<h4>' + Make + ' ' + Model + '</h4>'; // masin adi gelmelidi
                             html += '<br>';
@@ -840,8 +861,6 @@ include 'header.php';
             urlParams.forEach((value, key) => {
                 queryString += "&" + key + "=" + value;
             })
-
-            alert(queryString);
             xmlhttp.open("GET", "getCarForQuery.php" + queryString, true);
             xmlhttp.send();
 
@@ -855,7 +874,7 @@ include 'header.php';
             let xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    alert(this.responseText);
+                    // alert(this.responseText);
                     // get element child
                     let child = element.children;
 
