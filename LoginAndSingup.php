@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+
 require_once 'db.php';
 require_once 'functions.php';
 
@@ -16,13 +19,11 @@ if ($action == "login") {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($user) {
         $_SESSION['user'] = $user;
-        echo "success";
+        echo "Login Successful";
     } else {
-        echo "error";
+        echo "Username or password is incorrect";
     }
 } else if ($action == "signup") {
-
-    print_r($_REQUEST);
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "email is not valid";
@@ -52,39 +53,36 @@ if ($action == "login") {
         exit;
     }
 
-    if (count($_FILES) == 1) {
-        $dir = "User-Profile-Pictures/";
-        $file = basename($_FILES["image"]["name"]);
-        $path = $dir . $file; 
+    $dir = "User-Profile-Pictures/";
+    $file = basename($_FILES["image"]["name"]);
+    $path = $dir . $file;
 
-        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
-
-        $check = getimagesize($_FILES["image"]["tmp_name"]);
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
 
+    $check = getimagesize($_FILES["image"]["tmp_name"]);
 
-        $ok = $check && in_array($ext, ["jpg", "png", "jpeg"]) &&
-            !file_exists($path) && $_FILES["image"]["size"] < 5000000;
 
-        if ($ok) {
-            move_uploaded_file($_FILES["image"]["tmp_name"], $path);
-            $imageName = $username . "." . $ext;
-            rename($dir.$file, $dir.$imageName);
-            $password = md5($password);
-            $sql = "INSERT INTO user (Email, Username, Password, Photo) VALUES (:email, :username, :password, :photo)";
-            $stmt = $conn->prepare($sql);
+    $ok = $check && in_array($ext, ["jpg", "png", "jpeg"]) &&
+        !file_exists($path) && $_FILES["image"]["size"] < 5000000;
 
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':password', $password);
-            $stmt->bindParam(':photo', $imageName);
-            $stmt->execute();
-            echo "success";
-        } else
-            echo "Image error";
+    if ($ok) {
+        move_uploaded_file($_FILES["image"]["tmp_name"], $path);
+        $imageName = $username . "." . $ext;
+        rename($dir . $file, $dir . $imageName);
     } else {
-        echo "error";
-        exit;
+        echo "Image error";
+        $ok = false;
+        $imageName = "default.jpg";
     }
+    $password = md5($password);
+    $sql = "INSERT INTO user (Email, Username, Password, Photo) VALUES (:email, :username, :password, :photo)";
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':password', $password);
+    $stmt->bindParam(':photo', $imageName);
+    $stmt->execute();
+    echo "Signup Successful";
 }

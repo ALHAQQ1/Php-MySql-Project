@@ -6,16 +6,15 @@
         </div>
 
         <div id="login-form">
-            <input id="lgnEmail" type="text" placeholder="Enter email or username" />
-            <input id="lgnPass" type="password" placeholder="Enter password" />
+            <input id="lgnEmail" type="text" placeholder="Enter email or username" required/>
+            <input id="lgnPass" type="password" placeholder="Enter password" required/>
             <button onclick="login()" type="button" class="btn login">login</button>
-            <p><a href="javascript:void(0)">Forgotten account</a></p>
             <hr />
         </div>
         <div id="signup-form">
-            <input id="signEmail" type="email" placeholder="Enter your email" />
-            <input id="signUsername" type="text" placeholder="Choose username" />
-            <input id="signPass" type="password" placeholder="Create password" />
+            <input id="signEmail" type="email" placeholder="Enter your email" required/>
+            <input id="signUsername" type="text" placeholder="Choose username" required/>
+            <input id="signPass" type="password" placeholder="Create password" required/>
             <label for="profile-pic">Profile picture</label>
             <input id="signProfilePicture" type="file" name="sekil" />
             <button onclick="signup()" type="button" class="btn signup">Create account</button>

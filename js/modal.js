@@ -2,7 +2,7 @@ var modal = document.getElementById('modalBox')
 var btn = document.getElementById('myBtn')
 var modalChild = document.getElementById('modal')
 
-async function ShowModal (content) {
+async function ShowModal (content,CarId) {
   $('#primary-nav-button').click()
 
   modal.setAttribute('class', 'modalMainBox')

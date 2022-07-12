@@ -8,7 +8,7 @@
   .btn{
     background-color: #4883FF;
     border-radius: 10px;
-    width:120px;
+    width:140px;
     height:48px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);

@@ -26,12 +26,21 @@ async function login () {
     action: 'login'
   }
 
+  //control
+  if (email === '' || password === '') {
+    alert('Please fill in all fields')
+    return
+  }
+
   $.ajax({
     type: 'POST',
     url: 'LoginAndSingup.php',
     data: data,
     success: function (response) {
       alert(response)
+      //control
+      if (response === 'Login Successful') window.location.reload()
+      else password.value = ''
     }
   })
 }
@@ -45,13 +54,18 @@ async function signup () {
   var files = $('#signProfilePicture')[0].files
 
   //use form data
+
+  if (email === '' || username === '' || password === '') {
+    alert('Please fill in all fields')
+    return
+  }
   let formData = new FormData()
   formData.append('email', email)
   formData.append('username', username)
   formData.append('password', password)
   formData.append('action', 'signup')
 
-  formData.append('image', files[0])
+  if (files.length == 1) formData.append('image', files[0])
 
   $.ajax({
     type: 'POST',
@@ -61,6 +75,15 @@ async function signup () {
     processData: false,
     success: function (response) {
       alert(response)
+      //control
+      if (response === 'Signup Successful') {
+        toggleLogin()
+        document.getElementById('lgnEmail').value=email;
+      } else {
+        password.value = ''
+        email.value = ''
+        username.value = ''
+      }
     }
   })
   //ajax with jquery

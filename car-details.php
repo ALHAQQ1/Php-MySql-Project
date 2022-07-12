@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 
 require_once 'db.php';
 require_once 'functions.php';
@@ -7,15 +7,17 @@ require_once 'functions.php';
 getParams();
 if (isset($id)) {
 
-    $sql  = "SELECT cars.id as id ,ColorName as Color,";
+    $sql  = " SELECT cars.id as id,UserId,elan.id as elanid,ColorName as Color,";
     $sql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
     $sql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
-    $sql .= " FROM cars INNER JOIN elan ON";
-    $sql .= " cars.id = elan.CarId INNER JOIN City ON elan.CityId = City.id";
-    $sql .= " INNER JOIN Gearbox ON cars.GearboxId = Gearbox.id";
-    $sql .= " INNER JOIN Fuel ON cars.Fuelid = Fuel.id";
-    $sql .= " INNER JOIN Color ON cars.ColorId = Color.id";
-    $sql .= " INNER JOIN CarType ON cars.CarTypeId = CarType.id WHERE cars.id = :id";
+    $sql .= " FROM cars,elan,City,gearbox,fuel,color,carType WHERE ";
+    $sql .= " cars.id = elan.CarId ";
+    $sql .= " AND elan.CityId = City.id";
+    $sql .= " AND cars.GearboxId = Gearbox.id";
+    $sql .= " AND cars.Fuelid = Fuel.id";
+    $sql .= " AND cars.ColorId = Color.id";
+    $sql .= " AND cars.CarTypeId = CarType.id";
+    $sql .= " AND cars.id = :id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $id);
     $stmt->execute();
@@ -42,71 +44,8 @@ if (isset($id)) {
     $contact = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+include 'header.php';
 ?>
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Car Dealer</title>
-
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/fontAwesome.css">
-    <link rel="stylesheet" href="css/hero-slider.css">
-    <link rel="stylesheet" href="css/owl-carousel.css">
-    <link rel="stylesheet" href="css/style.css">
-
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-
-    <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-</head>
-
-<body>
-
-    <div class="wrap">
-        <header id="header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <button id="primary-nav-button" type="button">Menu</button>
-                        <a href="index.php">
-                            <div class="logo">
-                                <img src="img/logo.png" alt="Venue Logo">
-                            </div>
-                        </a>
-                        <nav id="primary-nav" class="dropdown cf">
-                            <ul class="dropdown menu">
-                                <li><a href="index.php">Home</a></li>
-                                <li class='active'><a href="cars.php">Cars</a></li>
-
-                                <li><a href="about-us.html">About Us</a></li>
-                                <li><a class="nav-link" href="contact.php">Contact Us</a></li>
-                            </ul>
-                        </nav><!-- / #primary-nav -->
-                    </div>
-                </div>
-            </div>
-        </header>
-    </div>
-
-    <section class="banner banner-secondary" id="top" style="background-image: url(img/banner-image-1-1920x300.jpg);">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <div class="banner-caption">
-                        <div class="line-dec"></div>
-                        <h2>MAŞIN ALQI SATQISI ELANLARI</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <main>
         <section class="featured-places">
@@ -367,24 +306,7 @@ if (isset($id)) {
                 </div>
             </div>
         </div>
-    </footer>
-
-    <div class="sub-footer">
-        <p>Copyright © 2020 Company Name - Template by: <a href="https://www.phpjabbers.com/">PHPJabbers.com</a></p>
-    </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
-    <script>
-        window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')
-    </script>
-
-    <script src="js/vendor/bootstrap.min.js"></script>
-
-    <script src="js/datepicker.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
-
-    <script>
+        <script>
         const mainImg = document.getElementById("head-image");
         const Images = document.querySelectorAll('.MyClass');
         Images[0].classList.add("actived");
@@ -399,6 +321,6 @@ if (isset($id)) {
             });
         });
     </script>
-</body>
-
-</html>
+   <?php 
+   include "footer.php";
+   ?>
