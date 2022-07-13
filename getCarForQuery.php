@@ -6,10 +6,11 @@ if (isset($_REQUEST['lastId'])) {
     getParams();
 }
 
+
 $listOfWhereCommand = [];
 if (isset($lastId)) $listOfWhereCommand[] = " cars.id > :id";
-if (isset($UserId)) 
-    if($_SESSION['user']['id']==$UserId)
+if (isset($UserId))
+    if ($_SESSION['user']['id'] == $UserId)
         $listOfWhereCommand[] = " elan.UserId = :UserId";
 if (isset($Make) && $Make != "All") $listOfWhereCommand[] = "Make = :Make";
 if (isset($Model) && $Model != "All") $listOfWhereCommand[] = "Model = :Model";

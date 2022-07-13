@@ -542,7 +542,7 @@ include 'header.php';
                         $string .= '<div class="text-button">';
                         $string .= '<a href="car-details.php?id=' . $key["id"] . '">View More</a>'; // ID gelmelidi
                         $string .= '</div>';
-                        $string .= '<button onclick="ShowModal(Edit,' . $key["id"] . ') value="Edit" class="btn">Edit</button>';
+                        $string .= '<button onclick="ShowModal(\'Edit\','. $key["id"] .')" value="Edit" class="btn buttons">Edit</button>';
                         $string .= '</div>';
                     } else {
                         $string .= '<div class="text-button">';
@@ -586,6 +586,7 @@ include 'header.php';
         const MaxPriceSelect = document.querySelector("[name = 'MaxPrice']");
         const MinMilageSelect = document.querySelector("[name = 'MinMileage']");
         const MaxMilageSelect = document.querySelector("[name = 'MaxMileage']");
+
         const UserId = document.getElementById("user").getAttribute("href").split("=")[1];
 
         function carDetail(id) {
@@ -830,7 +831,7 @@ include 'header.php';
                                 html += '<div class="text-button">';
                                 html += '<a href="car-details.php?id=' + id + '">View More</a>'; // ID gelmelidi
                                 html += '</div>';
-                                html += '<button onclick="ShowModal(Edit,' + id + ') "value="Edit" class="btn">Edit</button>';
+                                html += '<button onclick="ShowModal(\'Edit\',' + id + ')" value="Edit" class="btn buttons">Edit</button>';
                                 html += '</div>';
                             } else {
                                 html += '<div class="text-button">';
@@ -846,10 +847,13 @@ include 'header.php';
                             html += '</div>';
 
                             LastId = id;
+
+                            
                         }).catch(function(err) {
                             console.log(err);
                         }).finally(function() {
                             allCars.innerHTML += html;
+                            realoadEditBtns();
                         });
                     }
                 }
@@ -895,7 +899,20 @@ include 'header.php';
             xmlhttp.open("GET", "addRemoveFavorite.php?UserId=" + UserId + "&ElanId=" + elanid + "&Status=" + status, true);
             xmlhttp.send();
         }
-    </script>
+
+        
+realoadEditBtns();
+
+        //add click event all EditBtn
+        function realoadEditBtns(){
+            let EditBtn=document.querySelectorAll(".buttons");
+            for (let i = 0; i < EditBtn.length; i++) {
+                EditBtn[i].addEventListener("click", function(e) {
+                    e.stopPropagation();
+                });
+            }
+        }
+            </script>
 </main>
 
 <?php

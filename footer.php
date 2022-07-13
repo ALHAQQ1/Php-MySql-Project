@@ -63,12 +63,14 @@
 <script src="js/main.js"></script>
 <script src="js/modal.js"></script>
 <script src="js/login.js"></script>
+<script src="js/AddCar.js"></script>
 <script>
     function logout() {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200)
-                window.location.reload();
+            //send cars.php
+            window.location.href = "cars.php";
         };
         xmlhttp.open("GET", "logout.php", true);
         xmlhttp.send();

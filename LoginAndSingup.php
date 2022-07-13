@@ -63,8 +63,7 @@ if ($action == "login") {
     $check = getimagesize($_FILES["image"]["tmp_name"]);
 
 
-    $ok = $check && in_array($ext, ["jpg", "png", "jpeg"]) &&
-        !file_exists($path) && $_FILES["image"]["size"] < 5000000;
+    $ok = $check && in_array($ext, ["jpg", "png", "jpeg"]) && $_FILES["image"]["size"] < 5000000;
 
     if ($ok) {
         move_uploaded_file($_FILES["image"]["tmp_name"], $path);
@@ -84,5 +83,6 @@ if ($action == "login") {
     $stmt->bindParam(':password', $password);
     $stmt->bindParam(':photo', $imageName);
     $stmt->execute();
+
     echo "Signup Successful";
 }

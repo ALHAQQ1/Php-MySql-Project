@@ -29,7 +29,7 @@
     <div class="wrap">
         <header id="header">
             <div class="container">
-                <div class="row">
+                <div class="row" >
                     <div class="col-md-12">
                         <button id="primary-nav-button" type="button">Menu</button>
                         <a href="index.php">
@@ -63,11 +63,14 @@
                                     echo "</li>";
                                     // print_r($_SESSION['user']);
                                     echo "<li>";
-                                    echo '<a><button onclick="logout()" value="Logout" class="btn">Logout</button></a>';
+                                    echo '<a><button style="width:105px"; onclick="logout()" value="Logout" class="btn">Logout</button></a>';
+                                    echo "</li>";
+                                    echo "<li>";
+                                    echo '<button style="width:105px"; onclick="ShowModal(\'AddCar\')" value="AddCar" class="btn">Add new Car</button>';
                                     echo "</li>";
                                 } else {
                                     echo "<li>";
-                                    echo '<button onclick="ShowModal(this.value)" value="Login" class="btn" id="myBtn">Login</button>';
+                                    echo '<button onclick="ShowModal(\'Login\')" value="Login" class="btn" id="myBtn">Login</button>';
                                     echo "</li>";
                                 }
                                 ?>

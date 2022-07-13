@@ -47,7 +47,7 @@ include 'header.php';
                                         </fieldset>
                                     </div>
                                     <div class="col-md-12">
-                                        <input type="submit" value="Send Message" class="btn btn-primary btn-lg">
+                                        <input type="submit" value="Send Message" class="btn">
                                     </div>
                                     <div class="col-md-12 my-2">
                                         <?php

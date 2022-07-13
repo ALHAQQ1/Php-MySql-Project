@@ -41,17 +41,14 @@
     overflow: hidden;
   }
   .showModaal{
-    background:radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
     border-radius: 10px;
     animation-name: example;
     animation-duration: .5s;
     animation-iteration-count: 1;
-    height: 100px;
     transform: translateX(0px);
     display: flex;
     justify-content:center;
     align-items: center;
-    width:450px;
   }
   
   .disp-none{
