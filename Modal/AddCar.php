@@ -4,7 +4,7 @@ session_start();
 if (!isset($_SESSION['user']))
     return;
 
-require_once 'db.php';
+require_once '../db.php';
 
 
 ?>

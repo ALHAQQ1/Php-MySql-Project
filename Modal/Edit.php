@@ -5,13 +5,13 @@ if (!isset($_SESSION['user']))
     return;
 
 
-require_once 'db.php';
-require_once 'functions.php';
+require_once '../db.php';
+require_once '../functions.php';
 getParams();
 
 
 
-$sql  = " SELECT cars.id as id,elan.UserId,elan.id as elanid,ColorName as Color,";
+$sql  = " SELECT cars.id as id,elan.UserId,elan.Status,elan.id as elanid,ColorName as Color,";
 $sql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
 $sql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
 $sql .= " FROM cars,elan,City,gearbox,fuel,color,carType";
@@ -82,7 +82,7 @@ $car = $stmt->fetch(PDO::FETCH_ASSOC);
                     <label for="car_price">Car Price</label>
                     <div class="row">
                         <div class="col-md-7 col-sm-7 col-xs-7">
-                            <input value=<?='"'.$car["Price"].'"'?> type="number" class="form-control" id="car_price" name="CarPrice" placeholder="Car Price" required>
+                            <input value=<?= '"' . $car["Price"] . '"' ?> type="number" class="form-control" id="car_price" name="CarPrice" placeholder="Car Price" required>
                         </div>
                         <div class="col-md-5 col-sm-5 col-xs-5">
                             <select name="CarPriceType" class="form-control" required>
@@ -196,7 +196,6 @@ $car = $stmt->fetch(PDO::FETCH_ASSOC);
                     </select>
                 </div>
                 <div class="form-group  col-md-4 col-sm-4 col-xs-4">
-
                     <label for="car_image">City</label>
                     <select name="CarCity" class="form-control" required>
                         <option value="All">-- All --</option>
@@ -218,7 +217,6 @@ $car = $stmt->fetch(PDO::FETCH_ASSOC);
                     <input value=<?= '"' . $car["SellerName"] . '"' ?> type="text" class="form-control" id="SellerName" name="SellerName" placeholder="Car Seller Name" required>
                     <label>Phone Number</label>
                     <?php
-
                     $sql = "SELECT * FROM contacts WHERE CarId=:id";
                     $stmt = $conn->prepare($sql);
                     $stmt->bindParam(":id", $car["id"]);
@@ -235,18 +233,16 @@ $car = $stmt->fetch(PDO::FETCH_ASSOC);
                     $start = $start . "-";
                     $Number = substr($Number, 4);
 
-                    $Number=$start.$Number;
+                    $Number = $start . $Number;
 
                     ?>
-                    <input value=<?='"'.$Number.'"'?> type="tel" class="form-control" id="Phone Number" name="PhoneNumber" required>
-
+                    <input value=<?= '"' . $Number . '"' ?> type="tel" class="form-control" id="Phone Number" name="PhoneNumber" required>
                     <small>Format: 123-456-78-90</small>
                 </div>
                 <div class="form-group  col-md-4 col-sm-4 col-xs-4">
                     <label>Extras</label>
                     <select id="extras" style="height: 160px;" name="Extras[]" class="form-control" multiple>
                         <?php
-
                         $stmt = $conn->prepare("SELECT * FROM extras WHERE CarId = :id");
                         $stmt->bindParam(":id", $car['id']);
                         $stmt->execute();
@@ -268,15 +264,24 @@ $car = $stmt->fetch(PDO::FETCH_ASSOC);
                         ?>
                     </select>
                 </div>
-
                 <div class="form-group  col-md-4 col-sm-4 col-xs-4">
                     <label for="car_description">Car Description</label>
                     <textarea style="resize: none;" class="form-control" id="car_description" name="car_description" rows="10"><?= $car["Description"] ?></textarea>
                 </div>
-                <div style="display: flex; justify-content: center;" class="form-group  col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group  col-md-4 col-sm-4 col-xs-4">
+                    <label>Status</label>
+                    <input id="status" style="--size: 40px;" class="switch" type="checkbox" <?= ($car["Status"] == 1) ? "checked" : ""  ?>>
+                </div>
+                <div class="form-group  col-md-4 col-sm-4 col-xs-4">
+                    <input name="elanid" value=<?=$car['elanid']?> type="hidden">
+                    <input name="CarId" value=<?=$car['id']?> type="hidden">
+                    <input name="IsSalon" value=<?=$car['IsSalon']?> type="hidden">
+                    <input name="UserId" value=<?=$car['UserId']?> type="hidden">
+
+                </div>
+                <div style="display: flex; justify-content: center;" class="form-group  col-md-4 col-sm-4 col-xs-4">
                     <button onclick="Edit()" class="btn" value="addCar">Edit</button>
                 </div>
-
             </div>
         </div>
     </div>

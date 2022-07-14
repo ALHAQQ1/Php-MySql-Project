@@ -17,10 +17,6 @@ if (
 ) {
 
 
-
-
-
-
     $sql = "INSERT INTO `cars`(`ColorId`, `Fuelid`, `GearboxId`, `CarTypeId`, `Make`, `Model`, `Year`, `Engine`, `EnginePower`, `MillAge`, `Price`, `PriceType`, `IsSalon`, `Description`) VALUES";
     $carEnginePower = $carEnginePower;
 
@@ -119,14 +115,17 @@ if (
 
     $stmt->execute();
 
-    //add elan
-    $sql = "INSERT INTO `elan`(`UserId`,`SellerName`,`CityId`,`CarId`,`Status`) VALUES";
-    $sql .= "(:UserId,:SellerName,:CityId,:CarId,'1')";
+    //get current date with year-month-day
+    $date = date('Y-m-d');
+    
+    $sql = "INSERT INTO `elan`(`UserId`,`SellerName`,`CityId`,`CarId`,`Status`,`date`) VALUES";
+    $sql .= "(:UserId,:SellerName,:CityId,:CarId,'1',:date)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':UserId', $_SESSION['user']['id']);
     $stmt->bindParam(':SellerName', $car_seller_name);
     $stmt->bindParam(':CityId', $CarCity);
     $stmt->bindParam(':CarId', $last_id);
+    $stmt->bindParam(':date', $date);
     $stmt->execute();
 
     echo "success";

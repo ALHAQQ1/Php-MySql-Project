@@ -27,6 +27,9 @@ $sql .= " AND cars.GearboxId = Gearbox.id";
 $sql .= " AND cars.Fuelid = Fuel.id";
 $sql .= " AND cars.ColorId = Color.id";
 $sql .= " AND cars.CarTypeId = CarType.id ";
+if (!isset($UserId))
+    $sql .= " AND elan.status = 1";
+
 
 if (isset($SellerName)) {
     $sql .= " SellerName = :SellerName";
@@ -542,7 +545,7 @@ include 'header.php';
                         $string .= '<div class="text-button">';
                         $string .= '<a href="car-details.php?id=' . $key["id"] . '">View More</a>'; // ID gelmelidi
                         $string .= '</div>';
-                        $string .= '<button onclick="ShowModal(\'Edit\','. $key["id"] .')" value="Edit" class="btn buttons">Edit</button>';
+                        $string .= '<button onclick="ShowModal(\'Edit\',' . $key["id"] . ')" value="Edit" class="btn buttons">Edit</button>';
                         $string .= '</div>';
                     } else {
                         $string .= '<div class="text-button">';
@@ -848,7 +851,7 @@ include 'header.php';
 
                             LastId = id;
 
-                            
+
                         }).catch(function(err) {
                             console.log(err);
                         }).finally(function() {
@@ -900,19 +903,19 @@ include 'header.php';
             xmlhttp.send();
         }
 
-        
-realoadEditBtns();
+
+        realoadEditBtns();
 
         //add click event all EditBtn
-        function realoadEditBtns(){
-            let EditBtn=document.querySelectorAll(".buttons");
+        function realoadEditBtns() {
+            let EditBtn = document.querySelectorAll(".buttons");
             for (let i = 0; i < EditBtn.length; i++) {
                 EditBtn[i].addEventListener("click", function(e) {
                     e.stopPropagation();
                 });
             }
         }
-            </script>
+    </script>
 </main>
 
 <?php

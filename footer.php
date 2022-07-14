@@ -64,6 +64,7 @@
 <script src="js/modal.js"></script>
 <script src="js/login.js"></script>
 <script src="js/AddCar.js"></script>
+<script src="js/EditCar.js"></script>
 <script>
     function logout() {
         var xmlhttp = new XMLHttpRequest();

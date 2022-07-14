@@ -10,8 +10,7 @@ async function ShowModal (content, CarId) {
   if (!CarId) CarId = -1
   string = ''
   if (content == 'Edit') string = "?CarId=" + CarId;
-  console.log(content + '.php' + string);
-  let c = await fetch(content + '.php' + string)
+  let c = await fetch('Modal/'+content + '.php' + string)
   modalChild.innerHTML = await c.text()
 }
 modal.onclick = function (event) {

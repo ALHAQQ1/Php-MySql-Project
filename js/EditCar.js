@@ -1,9 +1,13 @@
-function CheckAndSend () {
+function Edit () {
   const carMake = document.querySelector('select[name="CarMake"]')
   const carModel = document.querySelector('input[name="CarModel"]')
   const carYear = document.querySelector('select[name="CarYear"]')
   const carColor = document.querySelector('select[name="CarColor"]')
   const carPrice = document.querySelector('input[name="CarPrice"]')
+  const elanid = document.querySelector('input[name="elanid"]')
+  const IsSalon = document.querySelector('input[name="IsSalon"]')
+  const UserId = document.querySelector('input[name="UserId"]')
+  const CarId = document.querySelector('input[name="CarId"]')
   const carMillage = document.querySelector('input[name="carMillage"]')
   const carType = document.querySelector('select[name="CarType"]')
   const gearbox = document.querySelector('select[name="GearBox"]')
@@ -18,10 +22,8 @@ function CheckAndSend () {
   const car_image = document.querySelector('input[name="Img"]')
   const car_seller_name = document.querySelector('input[name="SellerName"]')
   const car_seller_phone = document.querySelector('input[name="PhoneNumber"]')
+  const status = document.getElementById('status')
   let extras = document.getElementById('extras')
-
-  console.log(carEngineSize.value)
-  console.log(car_seller_phone.value.length)
 
   var ExtraSelected = []
   for (var option of extras.options)
@@ -105,18 +107,18 @@ function CheckAndSend () {
     alert('Please Enter Car Description')
     return
   }
-  if (car_image.files.length < 3) {
-    car_image.focus()
-    alert('Please Select Atleast 3 Images')
-    return
-  }
-  if (car_image.files.length > 21) {
-    car_image.focus()
-    alert('Please Select Atmost 20 Images')
-    return
-  }
+
+  let SendStatus = 0
+  console.log(status.checked)
+  if (status.checked == true) SendStatus = 1
+
+  console.log(SendStatus)
 
   let formData = new FormData()
+  formData.append('CarId', CarId.value)
+  formData.append('IsSalon', IsSalon.value)
+  formData.append('UserId', UserId.value)
+  formData.append('elanid', elanid.value)
   formData.append('CarMake', carMake.value)
   formData.append('CarModel', carModel.value)
   formData.append('CarYear', carYear.value)
@@ -126,26 +128,26 @@ function CheckAndSend () {
   formData.append('CarMillage', carMillage.value)
   formData.append('CarType', carType.value)
   formData.append('GearBox', gearbox.value)
+  formData.append('Status', SendStatus)
   formData.append('CarCity', CarCity.value)
   formData.append('carEngineSize', carEngineSize.value)
   formData.append('Fuel', fuel.value)
   formData.append('carEnginePower', carEnginePower.value)
   formData.append('car_description', car_description.value)
-  for (var i = 0; i < car_image.files.length; i++)
-    formData.append('car_image[]', car_image.files[i])
   formData.append('car_seller_name', car_seller_name.value)
   formData.append('car_seller_phone', car_seller_phone.value)
   formData.append('ExtraSelected', ExtraSelected)
-  console.log(formData)
 
   $.ajax({
     type: 'POST',
-    url: 'AddNewCar.php',
+    url: 'EditCar.php',
     data: formData,
     contentType: false,
     processData: false,
     success: function (response) {
-      alert(response)
+      if (response == 'Success') {
+        window.location.reload()
+      } else alert(response)
     }
   })
 }
