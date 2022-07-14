@@ -37,10 +37,12 @@ async function login () {
     url: 'LoginAndSingup.php',
     data: data,
     success: function (response) {
-      alert(response)
       //control
       if (response === 'Login Successful') window.location.reload()
-      else password.value = ''
+      else {
+        password.value = ''
+        alert(response)
+      }
     }
   })
 }
@@ -54,6 +56,7 @@ async function signup () {
   var files = $('#signProfilePicture')[0].files
 
   //use form data
+
 
   if (email === '' || username === '' || password === '') {
     alert('Please fill in all fields')
@@ -78,7 +81,7 @@ async function signup () {
       //control
       if (response === 'Signup Successful') {
         toggleLogin()
-        document.getElementById('lgnEmail').value=email;
+        document.getElementById('lgnEmail').value = email
       } else {
         password.value = ''
         email.value = ''

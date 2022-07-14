@@ -1,6 +1,7 @@
 <?php
 
 if (isset($_REQUEST['lastId'])) {
+    session_start();
     require_once 'db.php';
     require_once 'functions.php';
     getParams();

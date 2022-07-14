@@ -743,8 +743,6 @@ include 'header.php';
 
         async function LoadMore(lastId) {
 
-            console.log(<?= json_encode($favories); ?>);
-
             if (LastId == 0)
                 LastId = lastId;
             else
@@ -753,7 +751,7 @@ include 'header.php';
             xmlhttp.onreadystatechange = async function() {
                 if (this.readyState == 4 && this.status == 200) {
 
-                    if (this.responseText.length == 0) {
+                    if (this.responseText=='[]') {
                         alert("End Of Cars")
                         document.getElementById("loadMore").style.display = "none";
                         return;
