@@ -118,7 +118,7 @@ if (
     //get current date with year-month-day
     $date = date('Y-m-d');
     
-    $sql = "INSERT INTO `elan`(`UserId`,`SellerName`,`CityId`,`CarId`,`Status`,`date`) VALUES";
+    $sql = "INSERT INTO `elan`(`UserId`,`SellerName`,`CityId`,`CarId`,`Status`,`elanDate`) VALUES";
     $sql .= "(:UserId,:SellerName,:CityId,:CarId,'1',:date)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':UserId', $_SESSION['user']['id']);

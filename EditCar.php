@@ -66,7 +66,7 @@ if (
     $stmt->bindParam(':id', $ExtraId);
     if (count($ExtraSelected) > count($ExtrasIDS)) {
         for ($i = 0; $i < count($ExtrasIDS); $i++) {
-            $ExtraId = $ExtrasIDS[$i]['id'];;
+            $ExtraId = $ExtrasIDS[$i]['id'];
             $ExtraSel = $ExtraSelected[$i];
             $stmt->execute();
         }
@@ -81,7 +81,7 @@ if (
     } else {
         $counter=0;
         for ($i = 0; $i < count($ExtraSelected); $i++) {
-            $ExtraId = $ExtrasIDS[$i]['id'];;
+            $ExtraId = $ExtrasIDS[$i]['id'];
             $ExtraSel = $ExtraSelected[$i];
             $stmt->execute();
             $counter++;

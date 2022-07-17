@@ -32,7 +32,7 @@ if (!isset($UserId))
 
 
 if (isset($SellerName)) {
-    $sql .= " SellerName = :SellerName";
+    $sql .= " AND SellerName = :SellerName";
     $sql .= " ORDER BY cars.id LIMIT 51";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':SellerName', $SellerName);
@@ -574,24 +574,6 @@ include 'header.php';
         </div>
     </section>
     <script>
-        const MakeSelect = document.querySelector("[name = 'Make']");
-        const CarTypeSelect = document.querySelector("[name = 'CarType']");
-        const ModelSelect = document.querySelector("[name = 'Model']");
-        const EngineSizeSelect = document.querySelector("[name = 'EngineSize']");
-        const PowerSelect = document.querySelector("[name = 'Power']");
-        const FuelSelect = document.querySelector("[name = 'Fuel']");
-        const GearBoxSelect = document.querySelector("[name = 'Gearbox']");
-        const ColorSelect = document.querySelector("[name = 'Color']");
-        const CitySelect = document.querySelector("[name = 'City']");
-        const MinYearSelect = document.querySelector("[name = 'MinYear']");
-        const MaxYearSelect = document.querySelector("[name = 'MaxYear']");
-        const MinPriceSelect = document.querySelector("[name = 'MinPrice']");
-        const MaxPriceSelect = document.querySelector("[name = 'MaxPrice']");
-        const MinMilageSelect = document.querySelector("[name = 'MinMileage']");
-        const MaxMilageSelect = document.querySelector("[name = 'MaxMileage']");
-
-        const UserId = document.getElementById("user").getAttribute("href").split("=")[1];
-
         function carDetail(id) {
             //send him new blank page
             window.open("car-details.php?id=" + id, '_blank');
@@ -726,7 +708,6 @@ include 'header.php';
 
         //function loadmore
         const allCars = document.getElementById("allCars");
-        let LastId = 0;
 
         function asyncAjax(url) {
             return new Promise(function(resolve, reject) {
@@ -740,8 +721,33 @@ include 'header.php';
                 });
             });
         }
+        var LastId = 0;
 
         async function LoadMore(lastId) {
+            const MakeSelect = document.querySelector("[name = 'Make']");
+            const CarTypeSelect = document.querySelector("[name = 'CarType']");
+            const ModelSelect = document.querySelector("[name = 'Model']");
+            const EngineSizeSelect = document.querySelector("[name = 'EngineSize']");
+            const PowerSelect = document.querySelector("[name = 'Power']");
+            const FuelSelect = document.querySelector("[name = 'Fuel']");
+            const GearBoxSelect = document.querySelector("[name = 'Gearbox']");
+            const ColorSelect = document.querySelector("[name = 'Color']");
+            const CitySelect = document.querySelector("[name = 'City']");
+            const MinYearSelect = document.querySelector("[name = 'MinYear']");
+            const MaxYearSelect = document.querySelector("[name = 'MaxYear']");
+            const MinPriceSelect = document.querySelector("[name = 'MinPrice']");
+            const MaxPriceSelect = document.querySelector("[name = 'MaxPrice']");
+            const MinMilageSelect = document.querySelector("[name = 'MinMileage']");
+            const MaxMilageSelect = document.querySelector("[name = 'MaxMileage']");
+
+            let UserId = 0;
+
+            try {
+                UserId = document.getElementById("user").getAttribute("href").split("=")[1];
+
+            } catch (error) {
+                UserId=0;
+            }
 
             if (LastId == 0)
                 LastId = lastId;
@@ -751,7 +757,7 @@ include 'header.php';
             xmlhttp.onreadystatechange = async function() {
                 if (this.readyState == 4 && this.status == 200) {
 
-                    if (this.responseText=='[]') {
+                    if (this.responseText == '[]') {
                         alert("End Of Cars")
                         document.getElementById("loadMore").style.display = "none";
                         return;
@@ -776,7 +782,7 @@ include 'header.php';
                         let PriceType = response[i].PriceType;
                         let SellerName = response[i].SellerName;
                         let Milage = response[i].Milage;
-                        let ElanUserId = response[i].UserId;
+                        let ElanUserId = response[i].userid;
                         let elanid = response[i].elanid;
 
                         await asyncAjax("getCarImage.php?id=" + id).then(function(data) {

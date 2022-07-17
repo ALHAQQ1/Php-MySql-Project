@@ -35,7 +35,7 @@ if (!isset($lastId))
 
 if (isset($lastId)) {
 
-    $MySql  = " SELECT cars.id as id,UserId,elan.id as elanid,ColorName as Color,";
+    $MySql  = " SELECT cars.id as id,elan.UserId as userid,elan.id as elanid,ColorName as Color,";
     $MySql .= " CarTypeName as CarType,FuelName as Fuel,GearboxName as Gearbox,Make,Model,Year,Engine,EnginePower,MillAge as Milage";
     $MySql .= " ,Price,PriceType,IsSalon,Description,CityName as SellerCity,SellerName ";
     $MySql .= " FROM cars,elan,City,gearbox,fuel,color,carType WHERE ";
