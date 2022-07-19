@@ -145,6 +145,9 @@ function CheckAndSend () {
     contentType: false,
     processData: false,
     success: function (response) {
+      if (response == 'success') {
+        window.location.reload()
+      }
       alert(response)
     }
   })

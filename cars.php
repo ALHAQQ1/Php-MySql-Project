@@ -325,7 +325,7 @@ include 'header.php';
                                 $Fuels = $stmt->fetchAll();
                                 foreach ($Fuels as $fuel) {
                                     $string = "<option value='" . $fuel["ColorName"] . "'";
-                                    if (isset($Fuel) && $Fuel == $fuel["ColorName"]) $string .= "selected";
+                                    if (isset($Color) && $Color == $fuel["ColorName"]) $string .= "selected";
                                     $string .= ">" . $fuel["ColorName"] . "</option>";
                                     echo $string;
                                 }
@@ -722,7 +722,23 @@ include 'header.php';
             });
         }
         var LastId = 0;
+        const MakeSelect = document.querySelector("[name = 'Make']");
+        const CarTypeSelect = document.querySelector("[name = 'CarType']");
+        const ModelSelect = document.querySelector("[name = 'Model']");
+        const EngineSizeSelect = document.querySelector("[name = 'EngineSize']");
+        const PowerSelect = document.querySelector("[name = 'Power']");
+        const FuelSelect = document.querySelector("[name = 'Fuel']");
+        const GearBoxSelect = document.querySelector("[name = 'Gearbox']");
+        const ColorSelect = document.querySelector("[name = 'Color']");
+        const CitySelect = document.querySelector("[name = 'City']");
+        const MinYearSelect = document.querySelector("[name = 'MinYear']");
+        const MaxYearSelect = document.querySelector("[name = 'MaxYear']");
+        const MinPriceSelect = document.querySelector("[name = 'MinPrice']");
+        const MaxPriceSelect = document.querySelector("[name = 'MaxPrice']");
+        const MinMilageSelect = document.querySelector("[name = 'MinMileage']");
+        const MaxMilageSelect = document.querySelector("[name = 'MaxMileage']");
 
+        
         async function LoadMore(lastId) {
             const MakeSelect = document.querySelector("[name = 'Make']");
             const CarTypeSelect = document.querySelector("[name = 'CarType']");
@@ -746,7 +762,7 @@ include 'header.php';
                 UserId = document.getElementById("user").getAttribute("href").split("=")[1];
 
             } catch (error) {
-                UserId=0;
+                UserId = 0;
             }
 
             if (LastId == 0)
